@@ -1,0 +1,43 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "",
+  "imports": {
+    "#*": "./*"
+  },
+  "main": "src/server.ts",
+  "scripts": {
+    "dev": "tsx --watch --env-file=.env ./src/server.ts",
+    "start": "tsx --env-file=.env ./src/server.ts",
+    "drizzle": "drizzle-kit",
+    "drizzle:generate": "drizzle-kit generate",
+    "drizzle:migrate": "tsx --env-file=.env ./libs/db/migrate.ts",
+    "build": "tsup",
+    "start:prod": "node --env-file=.env dist/server.cjs",
+    "push": "npm run drizzle:generate && npm run drizzle:migrate",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "extensionless": {
+    "lookFor": [
+      "ts"
+    ]
+  },
+  "license": "ISC",
+  "type": "module",
+  "dependencies": {
+    "@types/express": "^5.0.6",
+    "drizzle-orm": "^0.45.1",
+    "express": "^5.2.1",
+    "extensionless": "^2.0.6",
+    "pg": "^8.16.3"
+  },
+  "devDependencies": {
+    "@types/pg": "^8.16.0",
+    "drizzle-kit": "^0.31.8",
+    "tsup": "^8.5.1",
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3"
+  }
+}
