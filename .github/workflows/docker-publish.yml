@@ -3,9 +3,6 @@ name: Docker Build and Publish
 on:
   push:
     branches: ["main"]
-    # Also trigger on master just in case
-    # branches: [ "main", "master" ]
-
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
@@ -19,7 +16,6 @@ jobs:
         with:
           node-version: "24"
 
-      # Using npm install instead of npm ci as package-lock.json might not be present
       - name: Install dependencies
         run: npm install
 

@@ -2,7 +2,7 @@ node_modules
 src
 .git
 *.ts
-drizzle
+
 README.md
 tsconfig.json
 tsup.config.ts
