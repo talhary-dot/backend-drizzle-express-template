@@ -39,4 +39,4 @@ jobs:
         with:
           context: .
           push: true
-          tags: talhary1/backend-drizzle-express-template:latest
+          tags: ${{ secrets.DOCKERUSERNAME }}/backend-drizzle-express-template
