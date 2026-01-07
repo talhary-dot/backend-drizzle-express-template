@@ -1,13 +1,19 @@
-# Base image: node:22-alpine is very small (~45MB)
+# Base image
 FROM node:24-alpine
 
 # Set working directory
 WORKDIR /app
 
-# Copy the bundled code
-# We only need the dist folder and .env
-COPY dist/ ./dist/
+# Copy package.json first to leverage Docker cache for dependencies
 COPY package.json ./
+
+# Install all dependencies (including devDependencies for tsx)
+RUN npm install
+
+# Copy the bundled code, migrations, and migration script
+COPY dist/ ./dist/
+COPY libs/ ./libs/
+COPY drizzle/ ./drizzle/
 COPY .env ./
 
 # Expose the port
