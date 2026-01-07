@@ -78,6 +78,19 @@ docker build -t backend-app .
 docker run -p 3000:3000 --env-file .env backend-app
 ```
 
+## Docker Compose
+
+Run the entire stack (Backend + Database) with one command:
+
+```bash
+docker-compose up -d --build
+```
+
+This starts:
+
+- **Backend**: On port 3000.
+- **PostgreSQL**: On port 5432 (default user/pass: `postgres`/`postgres`).
+
 ## Project Structure
 
 - `src/`: Source code
