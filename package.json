@@ -12,6 +12,7 @@
     "drizzle": "drizzle-kit",
     "drizzle:generate": "drizzle-kit generate",
     "drizzle:migrate": "node --experimental-strip-types --env-file=.env ./libs/db/migrate.ts",
+    "drizzle:migrate:prod": "node --experimental-strip-types ./libs/db/migrate.ts",
     "db:reset": "node --experimental-strip-types --env-file=.env ./scripts/force-db-reset.ts",
     "push": "npm run drizzle:generate && npm run drizzle:migrate",
     "test": "vitest"
