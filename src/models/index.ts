@@ -1,2 +1,2 @@
 export * from "./user.ts";
-export * from "./auth.ts";
+export { sessions, accounts, verifications } from "./auth.ts";

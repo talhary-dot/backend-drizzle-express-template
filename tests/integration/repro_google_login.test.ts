@@ -2,7 +2,7 @@ import { describe, it, expect, beforeAll, afterAll } from "vitest";
 import request from "supertest";
 import { app } from "../../src/server.ts"; // Adjust path if needed
 import { db } from "../../libs/db/index.ts";
-import { users, accounts } from "../../src/models/index.ts";
+import { users, accounts, sessions } from "../../src/models/index.ts";
 import { eq } from "drizzle-orm";
 import { betterAuth } from "better-auth";
 
@@ -21,12 +21,22 @@ describe("Reproduction: Google Login & Password Update", () => {
   let userId: string;
 
   beforeAll(async () => {
-    // Cleanup
-    await db.delete(users).where(eq(users.email, testUser.email));
+    // Cleanup any existing test user and their sessions/accounts
+    const existingUser = await db
+      .select()
+      .from(users)
+      .where(eq(users.email, testUser.email));
+    if (existingUser.length > 0) {
+      await db.delete(sessions).where(eq(sessions.userId, existingUser[0].id));
+      await db.delete(accounts).where(eq(accounts.userId, existingUser[0].id));
+      await db.delete(users).where(eq(users.id, existingUser[0].id));
+    }
   });
 
   afterAll(async () => {
     if (userId) {
+      await db.delete(sessions).where(eq(sessions.userId, userId));
+      await db.delete(accounts).where(eq(accounts.userId, userId));
       await db.delete(users).where(eq(users.id, userId));
     }
   });
