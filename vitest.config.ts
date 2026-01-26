@@ -5,6 +5,7 @@ try {
   process.loadEnvFile();
 } catch (error) {
   // Silent fail if no .env file
+
 }
 
 export default defineConfig({
