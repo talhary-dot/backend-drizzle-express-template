@@ -1,9 +1,8 @@
-version: '3.8'
 
 services:
-  # PostgreSQL Database
+  # PostgreSQL Database (optional - only needed if not using external DATABASE_URL)
   postgres:
-    image: postgres:16-alpine
+    image: postgres:18-alpine
     container_name: backend-postgres
     restart: unless-stopped
     environment:
@@ -21,6 +20,8 @@ services:
       retries: 5
     networks:
       - backend-network
+    profiles:
+      - local-db  # Only start postgres when using local database
 
   # Backend Application
   backend:
@@ -31,26 +32,8 @@ services:
     restart: unless-stopped
     ports:
       - "${PORT:-3000}:3000"
-    environment:
-      # Database Configuration
-      DATABASE_URL: postgresql://${DB_USER:-postgres}:${DB_PASSWORD:-postgres}@postgres:5432/${DB_NAME:-backend_db}
-      
-      # Application Configuration
-      PORT: ${PORT:-3000}
-      NODE_ENV: ${NODE_ENV:-production}
-      
-      # Better Auth Configuration
-      BETTER_AUTH_URL: ${BETTER_AUTH_URL:-http://localhost:3000}
-      
-      # Google OAuth (Optional - set in .env file)
-      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
-      GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
-      
-      # Frontend URL
-      FRONTEND_URL: ${FRONTEND_URL:-http://localhost:5173}
-    depends_on:
-      postgres:
-        condition: service_healthy
+    env_file:
+      - .env
     networks:
       - backend-network
     command: >
@@ -58,9 +41,9 @@ services:
         echo 'Waiting for database to be ready...' &&
         sleep 5 &&
         echo 'Running database migrations...' &&
-        node --experimental-strip-types ./libs/db/migrate.ts &&
+        npm run drizzle:migrate &&
         echo 'Starting application...' &&
-        node --experimental-strip-types ./src/server.ts
+        npm start
       "
 
 volumes:
