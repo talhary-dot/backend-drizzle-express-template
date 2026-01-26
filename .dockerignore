@@ -1,0 +1,45 @@
+# Dependencies
+node_modules/
+npm-debug.log*
+
+# Environment files (keep example)
+.env
+.env.local
+.env.*.local
+!.env.example
+
+# Git
+.git
+.gitignore
+
+# Docker
+Dockerfile
+docker-compose.yml
+.dockerignore
+
+# Documentation
+*.md
+!README.md
+
+# Tests
+tests/
+*.test.ts
+*.test.js
+vitest.config.ts
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Build artifacts
+dist/
+build/
+
+# Logs
+*.log

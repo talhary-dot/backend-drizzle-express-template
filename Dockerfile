@@ -1,32 +1,41 @@
 # Build stage
-FROM node:20-alpine AS builder
+FROM node:24-alpine AS builder
 
 WORKDIR /app
 
+# Copy package files
 COPY package*.json ./
-RUN npm ci
 
+# Install dependencies
+RUN npm i
+
+# Copy source code
 COPY . .
-RUN npm run drizzle:generate 
-# If you have a build step (e.g. tsc), run it here. 
-# Since this uses node --experimental-strip-types, we might not need to compile TS for runtime if node 22+ supports it. 
-# But this template seems to rely on node versions that support it or assumes dev mode.
-# For production, it's safer to compile or ensure the node version is recent.
-# The template package.json uses "start": "node --experimental-strip-types ... src/server.ts".
-# This requires Node 22.6.0+.
 
-FROM node:22-alpine
+# Generate Drizzle migrations
+RUN npm run drizzle:generate
+
+# Production stage
+FROM node:24-alpine
 
 WORKDIR /app
 
-COPY --from=builder /app/package*.json ./
-COPY --from=builder /app/node_modules ./node_modules
+# Copy package files and install production dependencies
+COPY package*.json ./
+RUN npm i
+
+# Copy necessary files from builder
 COPY --from=builder /app/src ./src
 COPY --from=builder /app/libs ./libs
-COPY --from=builder /app/.env ./.env
 COPY --from=builder /app/drizzle ./drizzle
 COPY --from=builder /app/drizzle.config.ts ./drizzle.config.ts
 
+# Expose the application port
 EXPOSE 3000
 
+# Health check
+HEALTHCHECK --interval=30s --timeout=3s --start-period=40s --retries=3 \
+    CMD node -e "require('http').get('http://localhost:3000/status', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"
+
+# Start the application
 CMD ["npm", "start"]
